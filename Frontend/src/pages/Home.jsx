@@ -1,16 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import ProductCard from '../components/ProductCard.jsx';
 import { Loader } from 'lucide-react';
+import { AuthContext } from '../context/AuthContext.jsx';
 
 const Home = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { user } = useContext(AuthContext);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const { data } = await axios.get('/api/products');
+        const config = {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        };
+        const { data } = await axios.get('/api/products', config);
         setProducts(data);
         setLoading(false);
       } catch (error) {
@@ -18,8 +25,10 @@ const Home = () => {
         setLoading(false);
       }
     };
-    fetchProducts();
-  }, []);
+    if (user) {
+      fetchProducts();
+    }
+  }, [user]);
 
   if (loading) {
     return (

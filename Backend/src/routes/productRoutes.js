@@ -13,12 +13,12 @@ const router = express.Router();
 
 router
   .route('/')
-  .get(getProducts)
+  .get(protect, getProducts)
   .post(protect, upload.single('image'), createProduct);
 
 router
   .route('/:id')
-  .get(getProductById)
+  .get(protect, getProductById)
   .put(protect, upload.single('image'), updateProduct)
   .delete(protect, deleteProduct);
 

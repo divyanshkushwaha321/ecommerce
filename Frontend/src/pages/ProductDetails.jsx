@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Loader, ShoppingCart, ArrowLeft } from 'lucide-react';
+import { Loader, ShoppingCart, ArrowLeft, Edit } from 'lucide-react';
 import { CartContext } from '../context/CartContext.jsx';
 import { AuthContext } from '../context/AuthContext.jsx';
 
@@ -24,7 +24,12 @@ const ProductDetails = () => {
 
     const fetchProduct = async () => {
       try {
-        const { data } = await axios.get(`/api/products/${id}`);
+        const config = {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        };
+        const { data } = await axios.get(`/api/products/${id}`, config);
         setProduct(data);
         setLoading(false);
       } catch (err) {
@@ -32,7 +37,9 @@ const ProductDetails = () => {
         setLoading(false);
       }
     };
-    fetchProduct();
+    if (user) {
+      fetchProduct();
+    }
   }, [id, user, navigate]);
 
   if (loading) return <div style={{ display: 'flex', justifyContent: 'center', marginTop: '4rem' }}><Loader className="animate-spin" size={40} color="var(--primary-color)" /></div>;
@@ -40,9 +47,16 @@ const ProductDetails = () => {
 
   return (
     <div className="container animate-fade-in" style={{ padding: '2rem 0' }}>
-      <button onClick={() => navigate(-1)} className="btn btn-secondary" style={{ marginBottom: '2rem' }}>
-        <ArrowLeft size={18} /> Back
-      </button>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+        <button onClick={() => navigate(-1)} className="btn btn-secondary">
+          <ArrowLeft size={18} /> Back
+        </button>
+        {user && product.user === user._id && (
+          <button onClick={() => navigate(`/edit-product/${product._id}`)} className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Edit size={18} /> Edit Product
+          </button>
+        )}
+      </div>
 
       <div className="glass-panel" style={{ display: 'flex', flexWrap: 'wrap', overflow: 'hidden' }}>
         <div style={{ flex: '1 1 400px', minHeight: '400px' }}>

@@ -1,9 +1,16 @@
 import Product from '../models/Product.js';
+import { v2 as cloudinary } from 'cloudinary';
+import fs from 'fs';
 
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 const getProducts = async (req, res) => {
   try {
-    const products = await Product.find({});
+    const products = await Product.find({ user: req.user._id });
     res.json(products);
     console.log(products)
   } catch (error) {
@@ -15,6 +22,10 @@ const getProductById = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
     if (product) {
+      if (product.user.toString() !== req.user._id.toString()) {
+        res.status(401);
+        throw new Error('User not authorized');
+      }
       res.json(product);
     } else {
       res.status(404);
@@ -32,7 +43,9 @@ const createProduct = async (req, res) => {
     let imageUrl = req.body.imageUrl;
 
     if (req.file) {
-      imageUrl = `/public/images/${req.file.filename}`;
+      const result = await cloudinary.uploader.upload(req.file.path);
+      imageUrl = result.secure_url;
+      fs.unlinkSync(req.file.path);
     }
     console.log(imageUrl)
 
@@ -48,7 +61,7 @@ const createProduct = async (req, res) => {
       imageUrl,
       user: req.user._id,
     });
-    
+
     const createdProduct = await product.save();
     res.status(201).json(createdProduct);
   } catch (error) {
@@ -61,15 +74,22 @@ const createProduct = async (req, res) => {
 const updateProduct = async (req, res) => {
   try {
     const { name, price, description } = req.body;
-    
+
     let imageUrl = req.body.imageUrl;
     if (req.file) {
-      imageUrl = `/public/images/${req.file.filename}`;
+      const result = await cloudinary.uploader.upload(req.file.path);
+      imageUrl = result.secure_url;
+      fs.unlinkSync(req.file.path);
     }
 
     const product = await Product.findById(req.params.id);
 
     if (product) {
+      if (product.user.toString() !== req.user._id.toString()) {
+        res.status(401);
+        throw new Error('User not authorized');
+      }
+
       product.name = name || product.name;
       product.price = price || product.price;
       product.description = description || product.description;
@@ -95,6 +115,11 @@ const deleteProduct = async (req, res) => {
     const product = await Product.findById(req.params.id);
 
     if (product) {
+      if (product.user.toString() !== req.user._id.toString()) {
+        res.status(401);
+        throw new Error('User not authorized');
+      }
+
       await product.deleteOne();
       res.json({ message: 'Product removed' });
     } else {

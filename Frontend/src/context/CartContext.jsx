@@ -1,21 +1,31 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useContext } from 'react';
+import { AuthContext } from './AuthContext.jsx';
 
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
+  const { user } = useContext(AuthContext);
   const [cartItems, setCartItems] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [loadedKey, setLoadedKey] = useState(null);
+
+  const storageKey = user ? `cartItems_${user._id}` : 'cartItems';
 
   useEffect(() => {
-    const items = localStorage.getItem('cartItems');
+    const items = localStorage.getItem(storageKey);
     if (items) {
       setCartItems(JSON.parse(items));
+    } else {
+      setCartItems([]);
     }
-  }, []);
+    setLoadedKey(storageKey);
+  }, [storageKey]);
 
   useEffect(() => {
-    localStorage.setItem('cartItems', JSON.stringify(cartItems));
-  }, [cartItems]);
+    if (loadedKey === storageKey) {
+      localStorage.setItem(storageKey, JSON.stringify(cartItems));
+    }
+  }, [cartItems, storageKey, loadedKey]);
 
   const addToCart = (product) => {
     const exist = cartItems.find((x) => x._id === product._id);

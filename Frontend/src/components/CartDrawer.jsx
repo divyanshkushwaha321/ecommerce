@@ -22,9 +22,9 @@ const CartDrawer = () => {
             <p style={{ color: 'var(--text-secondary)' }}>Your cart is empty.</p>
           ) : (
             cartItems.map((item) => (
-              <div key={item._id} className="cart-item" style={{ flexDirection: 'column' }}>
+              <div key={item._id} className="cart-item">
                 <div style={{ display: 'flex', gap: '1rem', width: '100%' }}>
-                  <img src={item.customImageUrl || (item.imageUrl?.startsWith('/') ? `http://localhost:5000${item.imageUrl}` : item.imageUrl)} alt={item.name} className="cart-item-img" />
+                  <img src={item.imageUrl?.startsWith('/') ? `http://localhost:5000${item.imageUrl}` : item.imageUrl} alt={item.name} className="cart-item-img" />
                   <div className="cart-item-details">
                     <div className="cart-item-title">{item.name}</div>
                     <div className="cart-item-price">${item.price}</div>
@@ -39,26 +39,8 @@ const CartDrawer = () => {
                     </div>
                   </div>
                 </div>
-                
-                {/* Custom Image Upload for Cart Item */}
-                <div style={{ marginTop: '0.5rem', position: 'relative' }}>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8rem', color: 'var(--primary-color)', cursor: 'pointer', padding: '0.25rem' }}>
-                    <UploadCloud size={14} />
-                    {item.customImageUrl ? 'Replace Custom Image' : 'Attach Custom Image'}
-                    <input 
-                      type="file" 
-                      accept="image/*" 
-                      style={{ display: 'none' }}
-                      onChange={(e) => {
-                        if (e.target.files[0]) {
-                          const url = URL.createObjectURL(e.target.files[0]);
-                          updateCartItemImage(item._id, url);
-                        }
-                      }}
-                    />
-                  </label>
                 </div>
-              </div>
+              
             ))
           )}
         </div>
