@@ -121,6 +121,7 @@ If you prefer testing with tools like Postman, here are the available endpoints 
 PORT=5000
 MONGO_URI=mongodb://localhost:27017/ecommerce
 
+JWT_SECRET=Divyansh@87654321
 
 CLOUDINARY_CLOUD_NAME=dn4onkkwb
 CLOUDINARY_API_KEY=133567655226553
