@@ -1,8 +1,8 @@
 # 🛒 E-Commerce Fullstack Application
 
-Welcome to the fullstack E-Commerce project! This application is a complete online store built using the **MERN** stack (MongoDB, Express, React, Node.js). 
+! This application is a complete online store built using the **MERN** stack (MongoDB, Express, React, Node.js). 
 
-It features a beautifully designed dark-mode user interface using "Glassmorphism" styling, secure user authentication, product management, and a fully functional shopping cart.
+It features a designed dark-mode user interface, secure user authentication, product management, and a fully functional shopping cart.
 
 ---
 
@@ -121,6 +121,7 @@ If you prefer testing with tools like Postman, here are the available endpoints 
 PORT=5000
 MONGO_URI=mongodb://localhost:27017/ecommerce
 
+JWT_SECRET=Divyansh@87654321
 
 CLOUDINARY_CLOUD_NAME=dn4onkkwb
 CLOUDINARY_API_KEY=133567655226553
