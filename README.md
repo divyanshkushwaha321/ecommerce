@@ -114,15 +114,3 @@ If you prefer testing with tools like Postman, here are the available endpoints 
 * `POST /api/products` - Create a product (*Requires JWT Auth Token & form-data with `image` file*)
 * `PUT /api/products/:id` - Update a product (*Requires JWT Auth Token*)
 * `DELETE /api/products/:id` - Delete a product (*Requires JWT Auth Token*)
-
-
-.env configurations
-
-PORT=5000
-MONGO_URI=mongodb://localhost:27017/ecommerce
-
-JWT_SECRET=Divyansh@87654321
-
-CLOUDINARY_CLOUD_NAME=dn4onkkwb
-CLOUDINARY_API_KEY=133567655226553
-CLOUDINARY_API_SECRET=AtWiWshMPVkgAlblB3HtjFBbc2c
